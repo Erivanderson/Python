@@ -1,0 +1,198 @@
+ # criar um arquivo com nome cobra.py
+
+class cobra:
+    def __init__(self, tam_tela =(300,400),
+               posicao=[80,50],# [esquerda, cima]
+               corpo=[[80,50],[70,50][60,50]],
+               direcao = 'Direita'):
+
+    self.tam_tela = tam_tela
+    self.posicao = posicao 
+    self.corpo = corpo
+    self.direcao = posicao
+
+    
+
+    def muda_direcao(self, nova_direcao):
+        if nova_direcao == 'Direita' and not self.direcao == 'Esquerda':
+            self.direcao = 'Direita'
+        if nova_direcao == 'Esquerda' and not self.direcao == 'Direita':
+            self.direcao = 'Esquerda'
+        if nova_direcao == 'cima' and not self.direcao == 'Baixo':
+            self.direcao = 'Cima'
+        if nova_direcao == 'Baixo' and not self.direcao == 'Cima':
+            self.direcao = 'Baixo'
+        
+    def move(self, posicao_comida):
+        if self.direcao == 'Direita'
+            self.posicao[0] += 10
+        if self.direcao == 'Esquerda'
+            self.posicao[0] -= 10
+        if self.direcao == 'Cima'
+            self.posicao[1] -= 10
+        if self.direcao == 'Baixo'
+            self.posicao[1] += 10       
+        
+
+        # adiciona pedaço do corpo da cobra na frente
+        self.corpo.insert(0, list(self.posicao))
+
+        # confere se comeu comida
+        if self.posicao == posicao_comida:
+            return True
+
+        # remover pedaço da cauda
+        self.copo.pop()
+        return False 
+
+        
+
+    def verifica colisao(self):
+        #posicao => [esquerda, cima]
+        # tam_tela => [largura, altura]
+
+        # se dis_esquerda > tam_tela horizontal ou se a dist_esquerda < 0 
+        
+        if self.posicao[0] > (self.tam_tela[0]-10) or self.posicao[0] <0:
+            return True 
+        
+        # se dist_cima > tam_tela vertical ou se a dist_cima < 0 
+         if self.posicao[1] > (self.tam_tela[1]-10) or self.posicao[1] <0:
+            return True 
+
+
+        #checar colisao com o proprio corpo 
+        for parte_do_corpo in self.corpo[1:]:
+            if self.posicao == parte_do_corpo: 
+                return Treu
+
+# depois de instalar o pygame vamos importa o pygame
+
+
+        # criar um arquivo com nome game.py
+
+#pip install pygame
+
+import pygame
+import sys
+from cobrinha import Cobra
+from comida import Comida 
+import time 
+
+# iniciar fonte
+pygame.font.init()
+minha_fonte = pygame.font.sysFont('Comic Sans MS',30)
+
+
+#inicializar o pygame
+
+pygame.init()
+TAM_TELA = (300, 400)
+tela = pygame.display.set_mode(TAM_TELA)
+
+# cronômetro | tempo  
+tempo = pygame.time.Clock()
+
+pontuacao = 0
+
+cobra = Cobra()
+comida = comida()
+posicao_comida = comida.posicao
+
+
+
+ # criar um arquivo com nome comida.py
+
+import random
+
+class Comida:
+    def __init__(self, tam_tela= (300,400)):
+        self. tam_tela = tam_tela
+        self.posicao = [random.randrange(10,self.tam_tela[0],10),
+                       random.randrange(10,self.tam_tela[0],10)]
+        
+        self.devorada = False
+    
+    def gera_nova_comida(self):
+        if self.devorada:
+           self.posicao = [random.randrange(10,self.tam_tela[0],10),
+                       random.randrange(10,self.tam_tela[0],10)]
+           
+           self.devorada = False
+        return self.posicao
+
+
+
+
+
+            # inicia o loop do jogo
+
+while True:
+    tela.fill((7,0,35))# RGB Red,Green, Blue(0,0,0 é branco e 255 é preto
+    
+    for event in pygame.event.get():
+         # listener - mouse ou teclado
+
+        if event.type == pygame.Quit:
+            #interrompe pygame
+            pygame.quit()
+            # fechar o script (janela)
+            sys.exit()
+
+        # se uma tecla for pressionada
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.k.RIGHT:
+                cobra.muda_direcao('Direita')
+            if event.key == pygame.k.LEFT:
+                cobra.muda_direcao('Esquerda')
+            if event.key == pygame.k.UP:
+                cobra.muda_direcao('Cima')
+            if event.key == pygame.k.Down:
+                cobra.muda_direcao('Baixo')
+
+    posicao_comida = comida.gera_nova_comida()
+
+   # se a cobra comer a comida
+    if cobre.move(posicao_comida)
+        comida.devorada = True 
+        pontuacao += 1
+        
+
+    if cobra.verifica_colisao():
+        #print('colidiu!!!')
+        pontos = minha_fonte.render(f'Pontuação: (pontuação)' True, (255,255,255))
+    tela.blit(pontos, (10,10))
+    
+        voce_perdeu = minha_fonte.render('Você Perdeu!!', True, (255,255,255))
+        pygame.display.flip()
+        tela.blit(Você Perdeu, (80,180))
+        pygame.display.flip()
+        time.sleep(2)
+        pygame.quit()
+        sys.exit()
+
+   
+    # texto da pontuaçao 
+    pontos = minha_fonte.render(f'Pontuação: (pontuação)' True, (255,255,255))
+    tela.blit(pontos, (10,10))
+    
+
+    
+    # desenha cobra
+    for pos in cobra.corpo:
+        pygame.draw.rect(tela, pygame.color(255,204,0,),
+                                # esquerda, cima, largura, altura
+                                pygame.rect(pos[0], pos[0] 10, 10))
+                                
+    #desenha comida
+     pygame.draw.rect(tela,pygame.color(255,0,0,),
+                    pygame.rect(posicao_comida[0], posicao_comida[1],10,10))
+
+
+
+    #atualiza a tela a cada frame
+    pygame.display.update()
+
+# FPS - Frames por Segundo 
+tempo.tick(15)
+
