@@ -1,0 +1,160 @@
+""" Arquivo de Texto SEM gerenciador de contexto """
+    '' with open()o que usamos mas para gerenciar  ''
+
+    ar = open('arquivo/exemplo.txt', 'w')
+    ar.write('Um texto qualquer') # para abri o arquivo
+    ar.closed # verificar se está aberto ou fechado
+    ar.close() # para fecha o arquivo
+
+
+"""Arquivo de Texto COM gerenciador de contexto """
+
+    with open('arquivo/exemplo.txt', 'w') as ar:
+        ar.write('Um txto qualquer')
+    ar.closed
+
+
+# gerenciador de texto com JSON
+
+""" Arquivo JSON SEM gerenciador de contexto """
+
+import json
+
+# fazer um dicionario
+dic_exemplo = {'mensagem': 'um texto qualquer'}
+ar_json = open('arquivo/exemplo.json', 'w')
+json.dump(dic_exemplo, arquivo_json, indent=2)
+ar_json.close()
+ar_json.closed
+
+
+""" Arquivo JSON COM gerenciador de contexto """
+
+with open('arquivo/exemplo.json', 'w') as ar_json:
+    json.dump(dic_exemplo, arquivo_json, indent=2)
+
+ar_json.closed
+
+""" Arquivo CSV SEM gerenciador de contexto """
+
+import csv
+ar_csv = open('arquivo/exemplo.csv', 'w')
+csv_writer = csv.writer(ar_csv)
+csv_writer.writerow(['Nome', 'Idade', 'sexo'])
+csv_writer.writerow(['luana', '19', 'Ferminino'])
+csv_writer.writerow(['paulo', '20', 'Masculino'])
+csv_writer.writerow(['claudia', '21', 'Ferminino'])
+ar_csv.close()
+
+ar_csv.closed
+
+import pandas as pd
+pd.read_csv('arquivo/exemplo.csv')
+
+
+""" Arquivo CSV SEM gerenciador de contexto """
+
+with open('arquivo/exemplo.csv', 'w') as ar_csv:
+    csv_writer = csv.writer(ar_csv)
+    csv_writer.writerow(['Nome', 'Idade', 'Sexo'])
+    csv_writer.writerow(['leila', '22', 'Ferminino'])
+    csv_writer.writerow(['paulo', '20', 'Masculino'])
+    csv_writer.writerow(['claudia', '21', 'Ferminino'])
+    ar_csv.close()
+
+ar_csv.closed
+
+pd.read_csv('arquivo/exemplo.csv')
+
+
+
+# Replicando Gerenciadores de contexto
+
+" com classes "
+
+class Abrir:
+    def __init__(self, arquivo, modo):
+        self.arquivo = arquivo
+        self.modo = modo
+
+    def __enter__(self):
+        self.ar = open(self.arqeivo, self.modo)
+        return self.arq
+
+    def __exit__(self, tipo_exc, valor_exc, traceback):
+        self.arq.close()
+
+with Abrir('arquivo/exemplo1.txt', 'w') as f:
+    f.write('Exemplo 1')
+
+f.closed
+
+
+""" com funçoes """
+
+from contextlib import contextmanager
+
+@contextmanager
+def abrir(arquivo, modo):
+    f = open(arquivo, modo) # __enter__
+    yield f # retonar o f com o with
+    f.close() # __exit__
+
+with abrir('arquivo/exemplo2.txt', 'w') as f:
+    f.write('exemplo 2')
+
+f.closed
+
+# Com try e finally trata os erros fechando
+@contextmanager
+def abrir(arquivo, modo):
+    try:
+        f = open(arquivo, modo) # __enter__
+        yield f # retonar o f com o with
+    finally:
+        f.close() # __exit__
+
+with abrir('arquivo/exemplo2.txt', 'w') as f:
+    f.write('exemplo 2')
+
+f.closed
+
+
+# conexao Banco de Dados
+import sqlite3
+
+conexao = sqlite3.connect(':memory:')
+c = conexao.cursor()
+c.execute('CREATE TABLE pessoas(nome text, email text)')
+c.execute("INSERT INTO pessoas VALUES ('maria', 'maria@email')")
+c.execute('SELECT *FROM pessoas')
+print(c.fetchall())
+# nao esquecer de fecha o banco, se usa o # na frente das palavras conexão o banco fica aberto
+conexao.commit()
+conexao.close()
+
+c.execute('SELECT *FROM pessoas')
+print(c.fetchall())
+
+# forma de feecha o bacno so com o commit sem precisa do close
+# Exemplo pratico
+""" Gerenciador de Contextopara Banco de Dados """
+@contextmanager
+def abri_banco(banco):
+    try:
+        conexao = sqlite3.connect(banco)
+        yield conexao
+    finally:
+        conexao.commit()
+        conexao.close()
+
+with abrir_banco(':memory:') as conexao: # pode ser no proprio banco
+    c = conexao.cursor()
+    c.execute('CREATE TABLE pessoas(nome text, email text)')
+    c.execute("INSERT INTO pessoas VALUES ('maria', 'maria@email')")
+    c.execute("INSERT INTO pessoas VALUES ('gustavo', 'gusta@email')")
+    c.execute('SELECT *FROM pessoas')
+    print(c.fetchall())
+# vai da erro por que o banco está fechado 
+c.execute('SELECT *FROM pessoas')
+print(c.fetchall())
