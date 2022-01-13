@@ -155,6 +155,7 @@ with abrir_banco(':memory:') as conexao: # pode ser no proprio banco
     c.execute("INSERT INTO pessoas VALUES ('gustavo', 'gusta@email')")
     c.execute('SELECT *FROM pessoas')
     print(c.fetchall())
+    
 # vai da erro por que o banco está fechado 
 c.execute('SELECT *FROM pessoas')
 print(c.fetchall())
