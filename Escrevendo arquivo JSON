@@ -1,0 +1,19 @@
+type(dados)
+dados
+
+with open('json/novo_json.js', 'w') as arquivo_json:
+    json.dump(dados, arquivo_json, indent=2)
+
+
+        # lendo arquivos JSON
+
+with open('json/novo_json.json') as arquivo_json:
+    novo_dicionario = json.load(arquivo_json)
+        pass
+
+type(novo_dicionario)
+
+    pass
+for dado in novo_dicionario('dados'):
+    print(dado['email'])
+        pass
