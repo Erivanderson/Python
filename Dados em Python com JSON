@@ -1,0 +1,20 @@
+import json
+
+dados = json.loads(string_cadastro) # s -> string
+print(dados)
+
+type(dados['dados'])
+
+dados['dados']
+
+for dado in dados['dados']:
+    print(dado['usuario'])
+    print(type(dado['idade']))
+    # outra forma
+    print('altura',dado['altura'])
+    print('idade',dado['idade'])
+
+# forma de deleta os dados
+for dado in dados['dados']:
+    del dado['idade']
+print(dados)
