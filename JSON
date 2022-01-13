@@ -1,0 +1,21 @@
+# cria um dicionario
+string_cadastro = '''
+{
+    "dados":[
+        {
+            "usuario": "ana",
+            "idade":  20,
+            "altura": 1.59,
+            "email": null,
+            "ativado": false
+        },
+        {
+            "usuario": "pedro",
+            "idade":  26,
+            "altura": 1.81,
+            "email": "pedrinho@email.com",
+            "ativado": true
+        }
+
+    ]
+}
