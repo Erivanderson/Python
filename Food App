@@ -1,0 +1,168 @@
+
+        "Food App"
+"""
+Food App 
+Desenvolvendo a logica de um aplicativo para solicitaçoes de lanche online 
+
+° Descontos
+    ° Compras acima de 100 reais = 10%
+    ° Compra de 4 ou mais itens diferentes => 5% 
+    ° Clientes com 500 pontos de fidelidade ou mas => 3% 
+"""
+
+# Cliente 
+from collections import namedtuple
+Cliente = namedtuple('cliente', 'nome pontos')
+
+class Item:
+    def __init__(self, produto, quantidade, preco):
+        self.produto = produto
+        self.quantidade = quantidade
+        self.preco = preco
+    
+    def total(self):
+        return self.preco * self.quantidade 
+
+# Pedido
+class Pedido:
+    def __init__(self, cliente, carrinho, promocao=None):
+        self.cliente = cliente 
+        self.carrinho = list(carrinho)
+        self.promocao = promocao
+        
+    def total(self):
+        if not hasattr(self, '_total'):
+            self._total = sum(item.total() for item in self.carrinho)
+        return self._total
+    
+    def devido(self):
+        if self.promocao is None:
+            desconto = 0
+        else:
+            desconto = self.promocao(self)
+        return self.total() - desconto 
+    
+    def __repr__(self):
+        pedido = 'Pedido total: R$ {:.2f}, Valor Devido: R$ {:.2f}'
+        return pedido.format(self.total(), self.devido())
+
+
+# Compras ou Promoção
+def cem_promo(pedido):
+    if pedido.total() > 100:
+        return pedido.total() * 0.10 #10%
+    else:
+        return 0
+
+def quatro_promo(pedido):
+    itens_diferentes = {item.produto for item in pedido.carrinho}
+    if len(itens_diferentes) >= 4:
+        return pedido.total() * 0.15 #15%
+    return 0
+
+def pontos_promo(pedido):
+    if pedido.cliente.pontos >= 500:
+        return pedido.total() * 0.05 #5%
+    return 0
+
+# testando a aplicação 
+    # cliente 
+paula = Cliente('Paula', 0)
+luiz = Cliente('Luiz', 600)
+
+# carrinho 
+carrinho = [Item('Batata Frita', 1, 4.5),
+           Item('Refrigerante', 2, 4.9),
+           Item('Hamburguer', 3, 9.1),
+           Item('Milk Shake', 4, 5.2)]
+
+# aplicando pedido
+
+    # pontos_promo
+
+Pedido(Paula, carrinho, pontos_promo)
+
+Pedido(Luiz, carrinho, pontos_promo)
+
+    # quatro_promo
+
+Pedido(Paula, carrinho, quatro_promo)
+
+Pedido(luiz, carrinho, quatro_promo)
+
+    # cem_promo
+
+Pedido(Paula, carrinho, cem_promo)
+
+Pedido(luiz, carrinho, cem_promo)
+
+
+# fazendo as promoções com generetion 
+
+promocoes = [pontos_promo, quatro_promo, cem_promo]
+
+def melhor_promo(pedido):
+    return max(promocao(pedido) for promocao in promocoes)
+
+carrinho_paula = [Item('Batata Frita', 1, 4.5),
+                Item('Refrigerante', 1, 4.9),
+                Item('Hamburguer', 3, 9.1),
+                Item('Milk Shake', 4, 5.2)
+
+
+carrinho_luiz = [Item('Batata Frita', 1, 4.5),
+               Item('Refrigerante', 1, 4.9),
+               Item('Hamburguer', 3, 9.1)]
+
+melhor_promo(Pedido(paula, carrinho_paula))
+melhor_promo(Pedido(luiz, carrinho_luiz))
+
+
+# Versão 2 
+
+promocoes_v2 = [globals()[nome] for nome in globals()
+               if nome.endswith('_promo')
+               and nome != 'melhor_promo']
+promocoes_v2
+
+def melhor_promo(pedido):
+    return max(promocao(pedido) for promocao in promocoes_v2)
+
+melhor_promo(Pedido(paula, carrinho_paula))
+melhor_promo(Pedido(luiz, carrinho_luiz))
+
+
+# versao 3
+    # decoradores 
+promocoes =[]
+def promocao(funcao_promo):
+    promocoes.append(funcao_promo)
+
+# para deseativa as promo é so a pagar @promocao de cima 
+
+@promocao
+def cem_promo(pedido):
+    if pedido.total() > 100:
+        return pedido.total() * 0.10 #10%
+    else:
+        return 0
+    
+@promocao
+def quatro_promo(pedido):
+    itens_diferentes = {item.produto for item in pedido.carrinho}
+    if len(itens_diferentes) >= 4:
+        return pedido.total() * 0.15 #15%
+    return 0
+
+@promocao
+def pontos_promo(pedido):
+    if pedido.cliente.pontos >= 500:
+        return pedido.total() * 0.05 #5%
+    return 0
+
+def melhor_promo(pedido):
+    return max(promocao(pedido) for promocao in promocoes)
+
+promocao
+
+promocoes
