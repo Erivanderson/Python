@@ -1,0 +1,15 @@
+# dicionário para String JSON
+dados['dados'][1]# para acessa o 1 dados
+
+# converte para JSON
+json_string = json.dumps(dados)
+json_string
+print(json_string)
+
+# de forma mas legivel
+json_string = json.dumps(dados, indent=2)# indent -> identação
+print(json_string)
+
+# oura forma
+json_string = json.dumps(dados, indent=2, sort_key=True)
+print(json_string)
